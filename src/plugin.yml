@@ -1,0 +1,9 @@
+name: LetsCook
+author: Yakumo_Reddo
+version: 1.0
+main: com.satsukirin.letscook.LetsCook
+api-version: 1.13
+commands:
+    lc:
+        description: Lets Cook.
+        usage: /lc help
