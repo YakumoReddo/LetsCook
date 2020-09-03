@@ -11,7 +11,11 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+import org.bukkit.Color;
 
 import com.satsukirin.letscook.LetsCook;
 
@@ -44,6 +48,20 @@ public class LCConfigurationSection {
 		}
 		if(meta.hasLore()) {
 			metaSection.set("lore",meta.getLore());
+		}
+		if(item.getType().equals(Material.POTION)) {
+			PotionMeta potionMeta = (PotionMeta)item.getItemMeta();
+			ConfigurationSection potionSection = metaSection.createSection("potion");
+			List<PotionEffect> effects = potionMeta.getCustomEffects();
+			List<String> listEffect = new ArrayList<String>();
+			for (PotionEffect potionEffect : effects) {
+				listEffect.add(potionEffect.getType().getName()+","+potionEffect.getDuration()+","+potionEffect.getAmplifier()+","+(potionEffect.isAmbient()?"1":"0")+","+(potionEffect.hasParticles()?"1":"0")+","+(potionEffect.hasIcon()?"1":"0"));
+			}
+			potionSection.set("effects", listEffect);
+			if(potionMeta.hasColor()) {
+				potionSection.set("color", potionMeta.getColor().asRGB());
+			}
+			
 		}
 		return itemSection;
 	}
@@ -78,8 +96,21 @@ public class LCConfigurationSection {
 				meta.addEnchant(Enchantment.getByKey(NamespacedKey.minecraft(strs[0])), Integer.parseInt(strs[1]),true);
 			}
 		}
-		
 		item.setItemMeta(meta);
+
+		if(metaSection.isConfigurationSection("potion")) {
+			ConfigurationSection potionSection = metaSection.getConfigurationSection("potion");
+			PotionMeta potionMeta = (PotionMeta)item.getItemMeta();
+			List<String> effects = potionSection.getStringList("effects");
+			for (String str : effects) {
+				String[] args = str.split(",");
+				potionMeta.addCustomEffect(new PotionEffect(PotionEffectType.getByName(args[0]), Integer.parseInt(args[1]),Integer.parseInt(args[2]), getStringBool(args[3]), getStringBool(args[4]),getStringBool(args[5])), true);
+			}
+			if(potionSection.isInt("color")) {
+				potionMeta.setColor(Color.fromRGB(potionSection.getInt("color")));
+			}
+		}
+		
 		return item;
 	}
 	
@@ -103,6 +134,12 @@ public class LCConfigurationSection {
 		if(meta.hasItemFlag(ItemFlag.HIDE_POTION_EFFECTS))itemflags.add(ItemFlag.HIDE_POTION_EFFECTS.toString());
 		if(meta.hasItemFlag(ItemFlag.HIDE_UNBREAKABLE))itemflags.add(ItemFlag.HIDE_UNBREAKABLE.toString());
 		return itemflags;
+	}
+	private static boolean getStringBool(String str) {
+		if(str.equalsIgnoreCase("1")||str.equalsIgnoreCase("t")||str.equalsIgnoreCase("true")||str.equalsIgnoreCase("Y")) {
+			return true;
+		}
+		return false;
 	}
 	
 }
