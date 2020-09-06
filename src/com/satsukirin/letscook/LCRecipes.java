@@ -34,7 +34,7 @@ public class LCRecipes {
 		wheatGrainRecipe.addIngredient(Material.WHEAT);
 		plugin.getServer().addRecipe(wheatGrainRecipe);
 		
-		//
+		
 		
 		
 		
