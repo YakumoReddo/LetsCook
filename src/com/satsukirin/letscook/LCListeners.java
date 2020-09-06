@@ -1,10 +1,11 @@
 package com.satsukirin.letscook;
 
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Dispenser;
@@ -12,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryAction;
@@ -22,27 +24,31 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import com.satsukirin.letscook.LCRecipes.TRT;
 import com.satsukirin.letscook.utils.LCInventoryHolder;
+
 
 
 public class LCListeners implements Listener {
 	
 	private LetsCook plugin;
-	private List<Integer> mixerIgnoreSlots = new ArrayList<Integer>()  ;
+	private List<Integer> mixerIgnoreSlots = new ArrayList<Integer>();
+	private List<Integer> brewIngoreSlots = new ArrayList<Integer>();
 	private Map<ItemStack, ItemStack> mixerRecipes = LCRecipes.getMixerRecipes();
-	private LCRecipeLoader recipeLoader;
+	private Map<TRT, ItemStack> brewRecipes = LCRecipes.getBrewRecipes();
+//	private LCRecipeLoader recipeLoader;
 	public LCListeners(LetsCook lc) {
 		this.plugin=lc;
 
-		try {
-			recipeLoader = new LCRecipeLoader(plugin);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		try {
+//			recipeLoader = new LCRecipeLoader(plugin);
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
 		
 		mixerIgnoreSlots.add(19);
 		mixerIgnoreSlots.add(20);
@@ -59,6 +65,13 @@ public class LCListeners implements Listener {
 		mixerIgnoreSlots.add(51);
 		mixerIgnoreSlots.add(52);
 		mixerIgnoreSlots.add(53);
+
+		brewIngoreSlots.add(5);
+		brewIngoreSlots.add(23);
+		brewIngoreSlots.add(39);
+		brewIngoreSlots.add(41);
+		brewIngoreSlots.add(43);
+		
 		
 		
 		
@@ -275,7 +288,53 @@ public class LCListeners implements Listener {
 			}
 			
 			if(data.equalsIgnoreCase("blazebrew")) {
-				e.getWhoClicked().sendMessage("blazeBrew");
+
+			}
+			if(data.equalsIgnoreCase("lavabrew")) {
+				
+			}
+			if(data.equalsIgnoreCase("waterbrew")) {
+				if(inv.contains(Material.BARRIER)) {
+					e.setCancelled(true);
+					return;
+				}
+				if(e.getSlot()==23) {
+					e.setCancelled(true);
+					if(inv.getItem(5)==null) {
+						return;
+					}
+					if(inv.getItem(5).getType().equals(Material.AIR)) {
+						return;
+					}
+					if(inv.getItem(41)==null) {
+						return;
+					}
+					if(inv.getItem(41).getType().equals(Material.AIR)) {
+						return;
+					}
+
+					ItemStack resource = inv.getItem(5).clone();
+					resource.setAmount(1);
+					TRT trt = new TRT("water", resource, inv.getItem(41));
+					if(brewRecipes.containsKey(trt)) {
+						inv.setItem(23, LCItems.MenuItems.cantClick());
+						ItemStack result = brewRecipes.get(trt);
+						new BrewAction(inv, result, trt.target).runTaskTimer(plugin, 1, 10);
+					}
+					
+					
+					
+				}
+				if(!brewIngoreSlots.contains(e.getSlot()))e.setCancelled(true);
+			}
+			if(data.equalsIgnoreCase("icebrew")) {
+				
+			}
+			if(data.equalsIgnoreCase("enderbrew")) {
+				
+			}
+			if(data.equalsIgnoreCase("soulbrew")) {
+				
 			}
 			
 			
@@ -284,6 +343,97 @@ public class LCListeners implements Listener {
 			return;
 		}
 		
+	}
+	
+	private class BrewAction extends BukkitRunnable{
+		private Inventory inv;
+		private ItemStack result;
+		private int action;
+		private ItemStack target;
+		public BrewAction(Inventory inventory,ItemStack item,ItemStack tar) {
+			this.inv = inventory;
+			this.result = item.clone();
+			this.target = tar.clone();
+			action = 0;
+		}
+		@Override
+		public void run() {
+			if(action == 0) {
+				ItemStack item = inv.getItem(5);
+				if(item.getAmount()==1) {
+					inv.clear(5);
+				}else {
+					item.setAmount(item.getAmount()-1);
+					inv.setItem(5,item);
+				}
+			}
+			if(action == 1) {
+				inv.setItem(14, LCItems.MenuItems.brewBrewing());
+			}
+			if(action == 3) {
+				inv.setItem(24, LCItems.MenuItems.brewBrewing());
+				inv.setItem(22, LCItems.MenuItems.brewBrewing());
+			}
+			if(action == 4) {
+				inv.setItem(21, LCItems.MenuItems.brewBrewing());
+				inv.setItem(25, LCItems.MenuItems.brewBrewing());
+			}
+			if(action == 5) {
+				inv.setItem(30, LCItems.MenuItems.brewBrewing());
+				inv.setItem(32, LCItems.MenuItems.brewBrewing());
+				inv.setItem(34, LCItems.MenuItems.brewBrewing());
+			}
+			if(action == 6) {
+				if(inv.getItem(39)==null) {}
+				else if(inv.getItem(39).equals(target)) {
+					inv.setItem(39,result);
+				}
+				if(inv.getItem(41)==null) {}
+				else if(inv.getItem(41).equals(target)) {
+					inv.setItem(41, result);
+				}
+				if(inv.getItem(43)==null) {}
+				else if(inv.getItem(43).equals(target)) {
+					inv.setItem(43,result);
+				}
+
+				ItemStack zwf2 = new ItemStack(Material.IRON_BARS);
+				ItemMeta zwf2meta = zwf2.getItemMeta();
+				zwf2meta.setDisplayName(" ");
+				List<String> zwf2lore = new LinkedList<String>();
+				zwf2lore.add(ChatColor.DARK_GRAY+""+ChatColor.ITALIC+"Let's Cook!");
+				zwf2meta.setLore(zwf2lore);
+				zwf2.setItemMeta(zwf2meta);
+				inv.setItem(14, zwf2);
+				inv.setItem(21, zwf2);
+				inv.setItem(22, zwf2);
+				inv.setItem(24, zwf2);
+				inv.setItem(25, zwf2);
+				inv.setItem(30, zwf2);
+				inv.setItem(32, zwf2);
+				inv.setItem(34, zwf2);
+				ItemStack zwf4 = new ItemStack(Material.REDSTONE_TORCH);
+				ItemMeta zwf4meta = zwf4.getItemMeta();
+				zwf4meta.setDisplayName(ChatColor.RED+"¿ªÊ¼ÄðÔì!");
+				List<String> zwf4lore = new LinkedList<String>();
+				zwf4lore.add(ChatColor.DARK_GRAY+""+ChatColor.ITALIC+"Let's Cook!");
+				zwf4meta.setLore(zwf4lore);
+				zwf4.setItemMeta(zwf4meta);
+				inv.setItem(23, zwf4);
+				cancel();
+			}
+			action++;
+		}
+	}
+	
+	@EventHandler
+	public void blockBreak(BlockBreakEvent e) {
+		if(e.getBlock()==null)return;
+		if(e.getBlock().getType().equals(Material.GRASS)) {
+			if(Math.random()<=0.2d) {
+				e.getBlock().getWorld().dropItem(e.getBlock().getLocation(), LCItems.Plants.hop());
+			}
+		}
 	}
 	
 	

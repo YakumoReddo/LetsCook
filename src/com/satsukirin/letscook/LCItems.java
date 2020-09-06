@@ -9,8 +9,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.potion.PotionType;
 
 
 public class LCItems {
@@ -210,8 +212,42 @@ public class LCItems {
 			item.setAmount(1);
 			return item;
 		}
+		public static ItemStack brewBrewing() {
+			ItemStack item = new ItemStack(Material.LADDER);
+			ItemMeta meta = item.getItemMeta();
+			meta.setDisplayName(" ");
+			List<String> lore = new LinkedList<String>();
+			lore.add(LCSUFFIX);
+			meta.setLore(lore);
+			item.setItemMeta(meta);
+			item.setAmount(1);
+			return item;
+		}
+		public static ItemStack cantClick() {
+			ItemStack item = new ItemStack(Material.BARRIER);
+			ItemMeta meta = item.getItemMeta();
+			meta.setDisplayName(ChatColor.RED+"不可操作");
+			List<String> lore = new LinkedList<String>();
+			lore.add(ChatColor.RED+"当前无法进行操作");
+			lore.add(LCSUFFIX);
+			meta.setLore(lore);
+			item.setItemMeta(meta);
+			item.setAmount(1);
+			return item;
+		}
 		
 	}
+	public static class DefaultItems{
+		public static ItemStack waterBottle() {
+			ItemStack item = new ItemStack(Material.POTION);
+			PotionMeta pmeta = (PotionMeta)item.getItemMeta();
+			PotionData pdata = new PotionData(PotionType.WATER);
+			pmeta.setBasePotionData(pdata);
+			item.setItemMeta(pmeta);
+			return item;
+		}
+	}
+	
 	
 	public static void setLCSign(ItemStack item,String tag) {
 		ItemMeta meta = item.getItemMeta();

@@ -1,6 +1,5 @@
 package com.satsukirin.letscook;
 
-import java.io.IOException;
 
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
@@ -20,12 +19,11 @@ public class LetsCook extends JavaPlugin {
 		
 		LCRecipes lcr = new LCRecipes(this);
 		
-		try {
-			itemLoader = new LCItemLoader(this);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		try {
+//			itemLoader = new LCItemLoader(this);
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
 		
 		this.getCommand("lc").setExecutor(new LCCmds(this));
 		
@@ -42,10 +40,10 @@ public class LetsCook extends JavaPlugin {
 		
 		getLogger().info("[Let's Cook!] Unloaded.");
 	}
-	
-	public LCItemLoader getItemLoader() {
-		return this.itemLoader;
-	}
+//	
+//	public LCItemLoader getItemLoader() {
+//		return this.itemLoader;
+//	}
 	public static LetsCook getInstance() {
 		return instance;
 	}

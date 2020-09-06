@@ -1,8 +1,0 @@
-unfermentedbeer:
-  type: water
-  resource: wheatgrain
-  result: unfermentedbeer
-beer:
-  type: water
-  resource: hop
-  result: beer

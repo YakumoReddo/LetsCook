@@ -11,11 +11,11 @@ import org.bukkit.inventory.ItemStack;
 public class LCCmds implements CommandExecutor{
 	
 	private LetsCook plugin;
-	private LCItemLoader itemLoader;
+//	private LCItemLoader itemLoader;
 	
 	public LCCmds(LetsCook lc) {
 		this.plugin=lc;
-		itemLoader = plugin.getItemLoader();
+//		itemLoader = plugin.getItemLoader();
 		return;
 	}
 	
@@ -30,20 +30,20 @@ public class LCCmds implements CommandExecutor{
 				if(args.length==1) {
 
 					if(args[0].equalsIgnoreCase("reload")) {
-						itemLoader.reload();
+//						itemLoader.reload();
 						return true;
 					}
 				}
 				if(args.length==2) {
 					
-					if(args[0].equalsIgnoreCase("read")) {
-						player.getInventory().addItem(itemLoader.getItem(args[1]));
-						return true;
-					}
-					if(args[0].equalsIgnoreCase("save")) {
-						itemLoader.saveItem(player.getEquipment().getItemInMainHand(), args[1]);
-						return true;
-					}
+//					if(args[0].equalsIgnoreCase("read")) {
+//						player.getInventory().addItem(itemLoader.getItem(args[1]));
+//						return true;
+//					}
+//					if(args[0].equalsIgnoreCase("save")) {
+//						itemLoader.saveItem(player.getEquipment().getItemInMainHand(), args[1]);
+//						return true;
+//					}
 					
 					if(args[0].equalsIgnoreCase("get")) {
 						

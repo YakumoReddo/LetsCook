@@ -126,6 +126,15 @@ public class LCMenu {
 		inv.setItem(52, zwf3);
 		inv.setItem(53, zwf3);
 		
+		ItemStack zwf4 = new ItemStack(Material.REDSTONE_TORCH);
+		ItemMeta zwf4meta = zwf4.getItemMeta();
+		zwf4meta.setDisplayName(ChatColor.RED+"¿ªÊ¼ÄðÔì!");
+		List<String> zwf4lore = new LinkedList<String>();
+		zwf4lore.add(LCSUFFIX);
+		zwf4meta.setLore(zwf4lore);
+		zwf4.setItemMeta(zwf4meta);
+		inv.setItem(23, zwf4);
+		
 		inv = brewSideBar(inv);
 		
 		return inv;

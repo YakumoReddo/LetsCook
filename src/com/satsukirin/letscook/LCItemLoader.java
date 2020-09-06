@@ -58,7 +58,6 @@ public class LCItemLoader {
 		try {
 			itemConfig.save(itemFile);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		itemFile = new File(plugin.getDataFolder(),"items.yml");
@@ -91,7 +90,6 @@ public class LCItemLoader {
 		try {
 			itemConfig.save(itemFile);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -104,7 +102,6 @@ public class LCItemLoader {
 		try {
 			itemConfig.save(itemFile);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return;
